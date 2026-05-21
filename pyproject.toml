@@ -32,6 +32,7 @@ dependencies = [
 dev = [
     "build>=1.2.1",
     "furo>=2024.8.6",
+    "interrogate>=1.7.0",
     "matplotlib>=3.8.0",
     "mypy>=1.10.0",
     "poethepoet>=0.27.0",
@@ -53,15 +54,45 @@ package = true
 [tool.hatch.build.targets.wheel]
 packages = ["src/bw_converter"]
 
-[tool.poe.tasks]
-test = "pytest"
-cov = "pytest --cov=bw_converter --cov-report=term-missing"
-lint = "ruff check ."
-format = "ruff format ."
-typecheck = "mypy src"
-docs = "sphinx-build -b html docs docs/_build/html"
-build = "python -m build"
-check = ["lint", "typecheck", "test"]
+[tool.poe.tasks.test]
+cmd = "pytest"
+help = "Run the pytest test suite."
+
+[tool.poe.tasks.cov]
+cmd = "pytest --cov=bw_converter --cov-report=term-missing --cov-fail-under=100"
+help = "Run tests with coverage and require 100% coverage."
+
+[tool.poe.tasks.lint]
+cmd = "ruff check ."
+help = "Check code style and common bugs with Ruff."
+
+[tool.poe.tasks.format]
+cmd = "ruff format ."
+help = "Format Python code with Ruff."
+
+[tool.poe.tasks.typecheck]
+cmd = "mypy src"
+help = "Run static type checking with mypy."
+
+[tool.poe.tasks.docs]
+cmd = "sphinx-build -b html docs docs/_build/html"
+help = "Build HTML documentation with Sphinx."
+
+[tool.poe.tasks.docs-check]
+cmd = "sphinx-build -W --keep-going -b html docs docs/_build/html"
+help = "Build documentation strictly and fail on Sphinx warnings."
+
+[tool.poe.tasks.docstrings]
+cmd = "interrogate src/bw_converter --fail-under=95"
+help = "Check docstring coverage with interrogate."
+
+[tool.poe.tasks.build]
+cmd = "python -m build"
+help = "Build source distribution and wheel packages."
+
+[tool.poe.tasks.check]
+sequence = ["lint", "typecheck", "docstrings", "docs-check", "cov"]
+help = "Run all quality checks used before submission."
 
 [tool.pytest.ini_options]
 addopts = "-ra"
@@ -78,6 +109,20 @@ source = ["bw_converter"]
 [tool.coverage.report]
 show_missing = true
 skip_covered = false
+fail_under = 100
+
+[tool.interrogate]
+ignore-init-method = true
+ignore-init-module = false
+ignore-magic = false
+ignore-module = false
+ignore-nested-functions = false
+ignore-private = false
+ignore-property-decorators = false
+ignore-semiprivate = false
+fail-under = 95
+exclude = ["docs", "tests", "benchmarks", "dist"]
+verbose = 1
 
 [tool.mypy]
 python_version = "3.11"

@@ -62,7 +62,7 @@ def min_channel(image: Image.Image) -> Image.Image:
 
 def convert_image(
     image: Image.Image,
-    algorithm: AlgorithmName,
+    algorithm: str,
     threshold_value: int = 128,
 ) -> Image.Image:
     """Apply a selected conversion algorithm to an image."""
@@ -77,3 +77,6 @@ def convert_image(
             return max_channel(image)
         case "min_channel":
             return min_channel(image)
+        case _:
+            msg = f"Unknown conversion algorithm: {algorithm}"
+            raise ValueError(msg)

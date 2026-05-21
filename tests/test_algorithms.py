@@ -49,3 +49,8 @@ def test_min_channel_algorithm(sample_image: Image.Image) -> None:
     result = convert_image(sample_image, "min_channel")
 
     assert pixels(result) == [30, 50]
+
+
+def test_convert_image_rejects_unknown_algorithm(sample_image: Image.Image) -> None:
+    with pytest.raises(ValueError, match="Unknown conversion algorithm"):
+        convert_image(sample_image, "unknown")

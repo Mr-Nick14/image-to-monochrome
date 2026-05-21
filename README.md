@@ -67,8 +67,38 @@ uv run poe cov
 uv run poe lint
 uv run poe format
 uv run poe typecheck
+uv run poe docs
+uv run poe docs-check
+uv run poe docstrings
+uv run poe build
 uv run poe check
 ```
+
+Доступные Poe-задачи:
+
+- `uv run poe test` - запускает обычные pytest-тесты.
+- `uv run poe cov` - запускает тесты с покрытием `pytest-cov` и порогом 100%.
+- `uv run poe lint` - проверяет код через `ruff check .`.
+- `uv run poe format` - форматирует Python-код через `ruff format .`.
+- `uv run poe typecheck` - запускает статическую проверку типов `mypy src`.
+- `uv run poe docs` - собирает HTML-документацию Sphinx в `docs/_build/html`.
+- `uv run poe docs-check` - собирает документацию в строгом режиме: предупреждения
+  Sphinx считаются ошибками.
+- `uv run poe docstrings` - проверяет покрытие docstring'ами через `interrogate`
+  с минимальным порогом 95%.
+- `uv run poe build` - собирает исходный архив и wheel через `python -m build`.
+- `uv run poe check` - общий контроль качества: `lint`, `typecheck`,
+  `docstrings`, `docs-check`, `cov`.
+
+Подсказку по задачам можно посмотреть так:
+
+```bash
+uv run poe --help
+uv run poe --help check
+```
+
+Краткий смысл каждой задачи также выводится в списке `Configured tasks`, если
+запустить `uv run poe` без названия задачи.
 
 В `ruff` включены правила `E`, `F`, `I`, `B`, `UP`, `N`, `D`, `ANN`, `C4`,
 `SIM`, `RET`, `ARG`, `PTH`, `PL`. Исключены конфликтующие docstring-правила
@@ -79,9 +109,11 @@ uv run poe check
 
 ```bash
 uv run poe docs
+uv run poe docs-check
 ```
 
-HTML будет собран в `docs/_build/html`.
+HTML будет собран в `docs/_build/html`. Команда `docs-check` нужна для CI и
+проверяет, что Sphinx-документация собирается без предупреждений.
 
 ## Производительность
 
@@ -104,6 +136,7 @@ NumPy, которая используется в основном коде. Г�
 
 ```bash
 uv run python -m build
+uv run poe build
 ```
 
 Загрузка на TestPyPI:

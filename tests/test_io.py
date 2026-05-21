@@ -33,6 +33,14 @@ def test_ensure_input_directory_rejects_missing_path(tmp_path: Path) -> None:
         ensure_input_directory(tmp_path / "missing")
 
 
+def test_ensure_input_directory_rejects_file(tmp_path: Path) -> None:
+    input_file = tmp_path / "input.txt"
+    input_file.write_text("not a directory", encoding="utf-8")
+
+    with pytest.raises(InputDirectoryError):
+        ensure_input_directory(input_file)
+
+
 def test_ensure_output_directory_creates_path(tmp_path: Path) -> None:
     output_dir = tmp_path / "nested" / "out"
 
@@ -44,6 +52,15 @@ def test_ensure_output_directory_creates_path(tmp_path: Path) -> None:
 def test_ensure_output_directory_wraps_os_error(tmp_path: Path) -> None:
     with (
         patch.object(Path, "mkdir", side_effect=PermissionError("denied")),
+        pytest.raises(OutputDirectoryError),
+    ):
+        ensure_output_directory(tmp_path / "out")
+
+
+def test_ensure_output_directory_rejects_non_directory(tmp_path: Path) -> None:
+    with (
+        patch.object(Path, "mkdir"),
+        patch.object(Path, "is_dir", return_value=False),
         pytest.raises(OutputDirectoryError),
     ):
         ensure_output_directory(tmp_path / "out")
