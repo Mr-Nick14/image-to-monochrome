@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [
-    { name = "Student Programmer" },
+    { name = "Mr-Nick-14" },
 ]
 keywords = ["image-processing", "black-white", "pillow", "cli"]
 classifiers = [
@@ -158,8 +158,6 @@ select = [
     "PL",
 ]
 ignore = [
-    # Russian educational README/docs explain user workflow better than forcing
-    # every test and Sphinx helper to repeat obvious module docstrings.
     "D100",
     "D104",
     "D203",
